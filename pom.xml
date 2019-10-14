@@ -1,0 +1,517 @@
+<!--
+   Copyright 2019 contributors to elastic2lmdb
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>biz.karms</groupId>
+    <artifactId>elastic2lmdb</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>elastic2lmdb</name>
+    <url>https://github.com/Karm/elastic2lmdb</url>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License, Version 3</name>
+            <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
+            <distribution>manual</distribution>
+            <comments>A free, copyleft license for software and other kinds of works</comments>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>karm</id>
+            <name>Michal Karm Babacek</name>
+            <organization>BuSab</organization>
+        </developer>
+    </developers>
+
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>bintray-karm-maven</id>
+            <name>bintray</name>
+            <url>https://dl.bintray.com/karm/toys</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <assembly.lib.directory>${project.build.directory}/lib</assembly.lib.directory>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <jar.finalName>${project.name}</jar.finalName>
+
+        <!-- maven-compiler-plugin -->
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+
+        <!-- Infinispan deps-->
+        <infinispan.core.version>8.2.6.Final</infinispan.core.version>
+        <infinispan.protostream.version>3.0.7.Final-karm-1-SNAPSHOT</infinispan.protostream.version>
+
+        <!-- Sinkit -->
+        <sinkit.version>2.2.1-SNAPSHOT</sinkit.version>
+
+        <!-- Apache commons -->
+        <commons.validator.version>1.5.0</commons.validator.version>
+        <commons.codec.version>1.10</commons.codec.version>
+        <commons.lang3.version>3.4</commons.lang3.version>
+
+        <!-- convenience utilities -->
+        <com.google.code.gson.version>2.6.2</com.google.code.gson.version>
+        <lombok.version>1.16.20</lombok.version>
+
+        <!-- Test -->
+        <junit.version>5.4.1</junit.version>
+        <java-hamcrest.version>2.0.0.0</java-hamcrest.version>
+        <mocito.version>2.16.0</mocito.version>
+        <surefire.version>2.20.1</surefire.version>
+
+        <!-- S3 -->
+        <minio.version>5.0.6</minio.version>
+
+
+        <forkCount>0</forkCount>
+
+
+        <!-- crc64 -->
+        <crc64.version>1.0.7</crc64.version>
+
+        <!-- to be removed -->
+        <slf4j.version>1.7.25</slf4j.version>
+        <netty-all.version>4.1.19.Final</netty-all.version>
+        <weld.version>3.1.0.Final</weld.version>
+
+        <!-- Elastic Search -->
+        <io.searchbox.jest.version>0.1.7</io.searchbox.jest.version>
+        <es.version>1.7.4</es.version>
+        <es.jna.version>4.1.0</es.jna.version>
+
+
+        <version.weld.junit5>1.3.1.Final</version.weld.junit5>
+        <docker-plugin.version>0.28.0</docker-plugin.version>
+
+    </properties>
+
+    <dependencies>
+
+        <!-- Elasticsearch RESTful client
+        <dependency>
+            <groupId>io.searchbox</groupId>
+            <artifactId>jest</artifactId>
+            <version>${io.searchbox.jest.version}</version>
+        </dependency>-->
+
+        <!-- Elastic search core -->
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>${es.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>${es.jna.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <version>${weld.version}</version>
+        </dependency>
+
+       <!-- <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>${netty-all.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-bom</artifactId>
+            <version>${infinispan.core.version}</version>
+            <type>pom</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-remote</artifactId>
+            <version>${infinispan.core.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.infinispan.protostream</groupId>
+                    <artifactId>protostream</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.infinispan.protostream</groupId>
+            <artifactId>protostream</artifactId>
+            <version>${infinispan.protostream.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
+            <version>${infinispan.core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons.codec.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>${commons.validator.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.lang3.version}</version>
+        </dependency>
+-->
+        <dependency>
+            <groupId>biz.karms.crc64java</groupId>
+            <artifactId>crc64java-java</artifactId>
+            <version>${crc64.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>biz.karms.crc64java</groupId>
+            <artifactId>crc64java-linux-x86_64</artifactId>
+            <version>${crc64.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-junit5</artifactId>
+            <version>${version.weld.junit5}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>java-hamcrest</artifactId>
+            <version>${java-hamcrest.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mocito.version}</version>
+            <scope>test</scope>
+        </dependency>
+-->
+
+
+   <!--     <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${com.google.code.gson.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>${minio.version}</version>
+        </dependency>
+-->
+
+
+        <dependency>
+            <groupId>org.lmdbjava</groupId>
+            <artifactId>lmdbjava</artifactId>
+            <version>0.6.3</version>
+        </dependency>
+
+
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+             <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-surefire-plugin</artifactId>
+                 <version>2.22.1</version>
+                 <configuration>
+                 <!--<properties>
+                     <property>
+                         <name>junit</name>
+                         <value>false</value>
+                     </property>
+                 </properties>-->
+             <threadCount>1</threadCount>
+         </configuration>
+         <!-- <dependencies>
+              <dependency>
+                  <groupId>org.apache.maven.surefire</groupId>
+                  <artifactId>surefire-junit47</artifactId>
+                  <version>${surefire.version}</version>
+              </dependency>
+                       <dependency>
+                           <groupId>org.apache.maven.surefire</groupId>
+                           <artifactId>surefire-testng</artifactId>
+                           <version>${surefire.version}</version>
+                       </dependency>
+          </dependencies>-->
+             </plugin>
+
+
+            <plugin>
+                <!-- Automatically start PostgreSQL for integration testing - requires Docker -->
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${docker-plugin.version}</version>
+                <configuration>
+                    <images>
+                        <image>
+                            <name>hugeox/sinkit-elastic:1.0</name>
+                            <alias>elastic</alias>
+                            <run>
+                                <env>
+                                    <ES_CLUSTER>archive</ES_CLUSTER>
+                                    <ES_HEAP_SIZE>1g</ES_HEAP_SIZE>
+                                    <ES_INT>lo</ES_INT>
+                                    <ES_SERVICE_NAME>archive</ES_SERVICE_NAME>
+                                    <ES_NODE_MASTER>true</ES_NODE_MASTER>
+                                    <ES_NODE_DATA>true</ES_NODE_DATA>
+                                    <ES_GROOVY_ENABLED>true</ES_GROOVY_ENABLED>
+                                    <ES_SCRIPT_DISABLE>false</ES_SCRIPT_DISABLE>
+                                    <ES_MINIMUM_MASTER_NODES>1</ES_MINIMUM_MASTER_NODES>
+                                </env>
+                                <ports>
+                                    <port>9300:9300</port>
+                                    <port>9200:9200</port>
+                                </ports>
+                                <log>
+                                    <prefix>Elastic: </prefix>
+                                    <date>default</date>
+                                    <color>cyan</color>
+                                </log>
+                                <wait>
+                                    <tcp>
+                                        <mode>mapped</mode>
+                                        <ports>
+                                            <port>9300</port>
+                                        </ports>
+                                    </tcp>
+                                    <time>10000</time>
+                                </wait>
+                            </run>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>docker-start</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>stop</goal>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>docker-stop</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+         </plugins>
+     </build>
+
+     <profiles>
+         <profile>
+             <id>assemble</id>
+             <activation>
+                 <activeByDefault>false</activeByDefault>
+             </activation>
+             <build>
+                 <plugins>
+                     <plugin>
+                         <groupId>org.apache.maven.plugins</groupId>
+                         <artifactId>maven-shade-plugin</artifactId>
+                         <executions>
+                             <execution>
+                                 <phase>package</phase>
+                                 <goals>
+                                     <goal>shade</goal>
+                                 </goals>
+                                 <configuration>
+                                     <transformers>
+                                         <transformer
+                                                 implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                             <mainClass>biz.karms.elastic2lmdb.Elastic2LMDB</mainClass>
+                                         </transformer>
+                                         <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                     </transformers>
+                                     <minimizeJar>false</minimizeJar>
+                                     <!--
+                                     <filters>
+                                         <filter>
+                                             <artifact>org.infinispan:infinispan-remote</artifact>
+                                             <includes>
+                                                 <include>**</include>
+                                             </includes>
+                                             <excludes>
+                                                 <exclude>org/infinispan/protostream/**</exclude>
+                                                 <exclude>protostream/**</exclude>
+                                             </excludes>
+                                         </filter>
+                                         <filter>
+                                             <artifact>org.infinispan.protostream</artifact>
+                                             <includes>
+                                                 <include>**</include>
+                                             </includes>
+                                         </filter>
+                                         <filter>
+                                             <artifact>org.jboss.logging</artifact>
+                                             <includes>
+                                                 <include>**</include>
+                                             </includes>
+                                         </filter>
+                                         <filter>
+                                             <artifact>xpp3</artifact>
+                                             <includes>
+                                                 <include>META-INF/services/org.xmlpull.v1.XmlPullParserFactory</include>
+                                                 <include>org/xmlpull/</include>
+                                             </includes>
+                                         </filter>
+                                     </filters>-->
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Code coverage analysis using Jacoco framework -->
+        <profile>
+            <id>coverage</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <!-- Generate HTML code coverage report -->
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.0</version>
+                        <reportSets>
+                            <reportSet>
+                                <reports>
+                                    <!-- select non-aggregate reports -->
+                                    <report>report</report>
+                                </reports>
+                            </reportSet>
+                        </reportSets>
+                    </plugin>
+                </plugins>
+            </reporting>
+
+            <!-- Run Jacoco code coverage analysis -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.20.1</version>
+                        <configuration>
+                            <forkCount>${forkCount}</forkCount>
+                            <reuseForks>true</reuseForks>
+                            <argLine>${argLine}</argLine>
+                            <properties>
+                                <property>
+                                    <name>junit</name>
+                                    <value>true</value>
+                                </property>
+                            </properties>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.surefire</groupId>
+                                <artifactId>surefire-junit47</artifactId>
+                                <version>2.20.1</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
