@@ -102,7 +102,7 @@
 
         <!-- Elastic Search -->
         <io.searchbox.jest.version>0.1.7</io.searchbox.jest.version>
-        <es.version>1.7.4</es.version>
+        <es.version>6.8.13</es.version>
         <es.jna.version>4.1.0</es.jna.version>
 
 
